@@ -32,6 +32,7 @@
 #include <utils/pathutils.h>
 #include <utils/clipboardutils.h>
 #include <export/exporter.h>
+#include <widgets/locationinputwithbrowsebutton.h>
 
 using namespace vnotex;
 
@@ -181,14 +182,9 @@ QGroupBox *ExportDialog::setupTargetGroup(QWidget *p_parent)
     }
 
     {
-        auto outputLayout = new QHBoxLayout();
-
-        m_outputDirLineEdit = WidgetsFactory::createLineEdit(box);
-        outputLayout->addWidget(m_outputDirLineEdit);
-
-        auto browseBtn = new QPushButton(tr("Browse"), box);
-        outputLayout->addWidget(browseBtn);
-        connect(browseBtn, &QPushButton::clicked,
+        m_outputDirLineEdit = new LocationInputWithBrowseButton(box);
+        layout->addRow(tr("Output directory:"), m_outputDirLineEdit);
+        connect(m_outputDirLineEdit, &LocationInputWithBrowseButton::clicked,
                 this, [this]() {
                     QString initPath = getOutputDir();
                     if (!QFileInfo::exists(initPath)) {
@@ -205,8 +201,6 @@ QGroupBox *ExportDialog::setupTargetGroup(QWidget *p_parent)
                         m_outputDirLineEdit->setText(dirPath);
                     }
                 });
-
-        layout->addRow(tr("Output directory:"), outputLayout);
     }
 
     return box;
